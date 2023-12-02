@@ -58,4 +58,5 @@ class GameOfLife:
         plt.grid(None)
         animated_board = animation.ArtistAnimation(fig, frames, interval=100, blit=True,
                                     repeat_delay=1000)
+        plt.close()
         animated_board.save(self.file_name)
