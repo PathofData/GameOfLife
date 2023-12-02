@@ -1,6 +1,5 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import matplotlib.cm as cm
 import matplotlib.animation as animation
 from tqdm import tqdm
 
@@ -21,9 +20,8 @@ class GameOfLife:
         )
         
     @staticmethod
-    def alive_neighbors(board_map:np.ndarray, x:int ,y:int) -> int:
-        return np.sum(board_map[x-1:x+2, y-1:y+2] == 1) - np.sum(board_map[x,y] == 1)
-    
+    def alive_neighbors(board_map: np.ndarray, x: int, y: int) -> int:
+        return np.sum(board_map[x-1:x+2, y-1:y+2] == 1) - np.sum(board_map[x, y] == 1)
 
     def update_board(self, board_map):
         new_board = board_map.copy()
@@ -33,30 +31,34 @@ class GameOfLife:
                 n_neighbors = self.alive_neighbors(board_map, i, j)
                 
                 # Rule 2
-                if (board_map[i,j] == 1) and (n_neighbors in [2,3]):
-                    new_board[i,j] = 1
+                if (board_map[i, j] == 1) and (n_neighbors in [2, 3]):
+                    new_board[i, j] = 1
                 
                 # Rule 1,3
-                if (board_map[i,j] == 1) and ((n_neighbors > 3) or (n_neighbors < 2)):
-                    new_board[i,j] = 0
+                if (board_map[i, j] == 1) and ((n_neighbors > 3) or (n_neighbors < 2)):
+                    new_board[i, j] = 0
                 # Rule 4
-                if (board_map[i,j] == 0) and (n_neighbors == 3):
-                    new_board[i,j] = 1
+                if (board_map[i, j] == 0) and (n_neighbors == 3):
+                    new_board[i, j] = 1
         return new_board
-    
-    
+
     def run_simulation(self, n_generations):
         board_map = self.generate_board()
         
         fig = plt.figure()
-        frames = [[plt.imshow(board_map, cmap=cm.Greys_r, vmin=0, vmax=1, animated=True)]]
-        for i in tqdm(range(n_generations)):
+        frames = [[plt.imshow(board_map, vmin=0, vmax=1, animated=True)]]
+        for _ in tqdm(range(n_generations)):
             board_map = self.update_board(board_map=board_map)
-            frames.append([plt.imshow(board_map, cmap=cm.Greys_r, vmin=0, vmax=1, animated=True)])
+            frames.append([plt.imshow(board_map, vmin=0, vmax=1, animated=True)])
             
         plt.axis('off')
         plt.grid(None)
-        animated_board = animation.ArtistAnimation(fig, frames, interval=100, blit=True,
-                                    repeat_delay=1000)
+        animated_board = animation.ArtistAnimation(
+            fig,
+            frames,
+            interval=100,
+            blit=True,
+            repeat_delay=1000
+        )
         plt.close()
         animated_board.save(self.file_name)
