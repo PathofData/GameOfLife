@@ -4,7 +4,7 @@ A naive implementation of Conway's Game of Life
 # Usage
 Import the main class which will initialize a random map with the specified parameters:
 
-`board_size`: Controls the size of the 2 by 2 grid
+`board_size`: Controls the size of the 2 dimesional grid
 
 `initial_probability`: The probability of the alive cells in the grid
 
