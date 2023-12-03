@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
+from matplotlib.animation import FuncAnimation
 from tqdm import tqdm
 from scipy.signal import convolve2d
 
@@ -56,6 +57,38 @@ class GameOfLife:
             frames,
             interval=100,
             blit=True,
+            repeat_delay=1000
+        )
+        plt.close()
+
+        print(f"Saving animation as: {self.file_name}")
+        animated_board.save(self.file_name)
+
+    def run_simulation_v2(self, n_generations):
+        board_map = self.generate_board()
+
+        # Initialize a figure for plotting
+        fig, ax = plt.subplots()
+        img = ax.imshow(board_map, vmin=0, vmax=1, animated=True)
+
+        def init():
+            img.set_data(board_map)
+            return [img]
+
+        def update(frame):
+            nonlocal board_map
+            board_map = self.update_board(board_map)
+            img.set_data(board_map)
+            return [img]
+
+        print("Compiling the frames to video format...")
+        animated_board = FuncAnimation(
+            fig,
+            update,
+            init_func=init,
+            frames=n_generations,
+            blit=True,
+            interval=100,
             repeat_delay=1000
         )
         plt.close()
