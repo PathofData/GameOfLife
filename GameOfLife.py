@@ -1,9 +1,8 @@
 import numpy as np
-import matplotlib.pyplot as plt
-import matplotlib.animation as animation
-from matplotlib.animation import FuncAnimation
-from tqdm import tqdm
 from scipy.signal import convolve2d
+
+import matplotlib.pyplot as plt
+from matplotlib.animation import FuncAnimation
 
 
 class GameOfLife:
@@ -39,32 +38,6 @@ class GameOfLife:
         return new_board.astype(int)
 
     def run_simulation(self, n_generations):
-        board_map = self.generate_board()
-
-        fig = plt.figure()
-        frames = [[plt.imshow(board_map, vmin=0, vmax=1, animated=True)]]
-
-        for _ in tqdm(range(n_generations), desc="Running simulation"):
-            board_map = self.update_board(board_map=board_map)
-            frames.append([plt.imshow(board_map, vmin=0, vmax=1, animated=True)])
-            
-        plt.axis("off")
-        plt.grid(None)
-
-        print("Compiling the frames to video format...")
-        animated_board = animation.ArtistAnimation(
-            fig,
-            frames,
-            interval=100,
-            blit=True,
-            repeat_delay=1000
-        )
-        plt.close()
-
-        print(f"Saving animation as: {self.file_name}")
-        animated_board.save(self.file_name)
-
-    def run_simulation_v2(self, n_generations):
         board_map = self.generate_board()
 
         # Initialize a figure for plotting
