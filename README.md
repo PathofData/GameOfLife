@@ -1,5 +1,9 @@
 # GameOfLife
-A naive implementation of Conway's Game of Life
+An optimised implementation of Conway's Game of Life.
+
+The Algorithm uses scipy's fast vectorised convolutions approach to calculate the next state.
+
+The final video is compiled using the ffmpeg library.
 
 # Usage
 Import the main class which will initialize a random map with the specified parameters:
