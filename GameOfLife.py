@@ -4,16 +4,6 @@ import matplotlib.animation as animation
 from tqdm import tqdm
 from scipy.signal import convolve2d
 
-import sys
-import logging
-
-rootLogger = logging.getLogger()
-logFormatter = logging.Formatter("%(asctime)s [%(threadName)-12.12s] [%(levelname)-5.5s]  %(message)s")
-consoleHandler = logging.StreamHandler(sys.stdout)
-consoleHandler.setFormatter(logFormatter)
-rootLogger.addHandler(consoleHandler)
-rootLogger.setLevel(logging.DEBUG)
-
 
 class GameOfLife:
     def __init__(self, board_size, initial_probability, file_name, random_seed=1):
@@ -60,7 +50,7 @@ class GameOfLife:
         plt.axis("off")
         plt.grid(None)
 
-        rootLogger.info("Compiling animation")
+        print("Compiling the frames to video format...")
         animated_board = animation.ArtistAnimation(
             fig,
             frames,
@@ -70,5 +60,5 @@ class GameOfLife:
         )
         plt.close()
 
-        rootLogger.info("Saving animation")
+        print(f"Saving animation as: {self.file_name}")
         animated_board.save(self.file_name)
