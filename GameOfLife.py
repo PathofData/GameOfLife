@@ -2,6 +2,17 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 from tqdm import tqdm
+from scipy.signal import convolve2d
+
+import sys
+import logging
+
+rootLogger = logging.getLogger()
+logFormatter = logging.Formatter("%(asctime)s [%(threadName)-12.12s] [%(levelname)-5.5s]  %(message)s")
+consoleHandler = logging.StreamHandler(sys.stdout)
+consoleHandler.setFormatter(logFormatter)
+rootLogger.addHandler(consoleHandler)
+rootLogger.setLevel(logging.DEBUG)
 
 
 class GameOfLife:
@@ -18,41 +29,38 @@ class GameOfLife:
             size=(self.board_size, self.board_size), 
             p=[1-self.initial_probability, self.initial_probability]
         )
-        
+
     @staticmethod
-    def alive_neighbors(board_map: np.ndarray, x: int, y: int) -> int:
-        return np.sum(board_map[x-1:x+2, y-1:y+2] == 1) - np.sum(board_map[x, y] == 1)
+    def alive_neighbors(board_map):
+        kernel = np.array([[1, 1, 1],
+                           [1, 0, 1],
+                           [1, 1, 1]])
+        return convolve2d(board_map, kernel, mode='same', boundary='wrap')
 
     def update_board(self, board_map):
-        new_board = board_map.copy()
-        board_x_max, board_y_max = board_map.shape
-        for i in range(board_x_max):
-            for j in range(board_y_max):
-                n_neighbors = self.alive_neighbors(board_map, i, j)
-                
-                # Rule 2
-                if (board_map[i, j] == 1) and (n_neighbors in [2, 3]):
-                    new_board[i, j] = 1
-                
-                # Rule 1,3
-                if (board_map[i, j] == 1) and ((n_neighbors > 3) or (n_neighbors < 2)):
-                    new_board[i, j] = 0
-                # Rule 4
-                if (board_map[i, j] == 0) and (n_neighbors == 3):
-                    new_board[i, j] = 1
-        return new_board
+        n_neighbors = self.alive_neighbors(board_map)
+
+        # Applying the rules to the entire board
+        born = (n_neighbors == 3) & (board_map == 0)
+        survive = ((n_neighbors == 2) | (n_neighbors == 3)) & (board_map == 1)
+        new_board = born | survive
+
+        return new_board.astype(int)
 
     def run_simulation(self, n_generations):
         board_map = self.generate_board()
-        
+
         fig = plt.figure()
         frames = [[plt.imshow(board_map, vmin=0, vmax=1, animated=True)]]
-        for _ in tqdm(range(n_generations)):
+
+        for _ in tqdm(range(n_generations), desc="Running simulation"):
             board_map = self.update_board(board_map=board_map)
             frames.append([plt.imshow(board_map, vmin=0, vmax=1, animated=True)])
             
-        plt.axis('off')
+        plt.axis("off")
         plt.grid(None)
+
+        rootLogger.info("Compiling animation")
         animated_board = animation.ArtistAnimation(
             fig,
             frames,
@@ -61,4 +69,6 @@ class GameOfLife:
             repeat_delay=1000
         )
         plt.close()
+
+        rootLogger.info("Saving animation")
         animated_board.save(self.file_name)
