@@ -6,6 +6,8 @@ The Algorithm uses scipy's fast vectorised convolutions approach to calculate th
 The final video is compiled using the ffmpeg library.
 
 # Usage
+The board can be initialized with a user defined image or a random sequence.
+
 Import the main class which will initialize a random map with the specified parameters:
 
 `board_size`: Controls the size of the 2 dimesional grid
