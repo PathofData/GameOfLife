@@ -1,4 +1,4 @@
-# GameOfLife
+# game-of-life-py
 An optimised implementation of Conway's Game of Life.
 
 The Algorithm uses scipy's fast vectorised convolutions approach to calculate the next state.
