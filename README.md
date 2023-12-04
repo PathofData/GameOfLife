@@ -1,7 +1,7 @@
 # game-of-life-py
 An optimised implementation of Conway's Game of Life.
 
-The Algorithm uses scipy's fast vectorised convolutions approach to calculate the next state.
+The Algorithm uses scipy's vectorised convolution approach to calculate the next state.
 
 The final video is compiled using the ffmpeg library.
 
