@@ -27,6 +27,17 @@ class GameOfLife:
 
         image_array = np.asarray(image)
 
+        if self.gradient_mag > 0.0:
+            preprocessed_image = self.compute_gradient(image_array=image_array)
+            # Threshold values to binary outcomes
+            preprocessed_image = np.where(preprocessed_image >= self.gradient_mag, 1, 0)
+        else:
+            preprocessed_image = image_array
+
+        return preprocessed_image
+
+    @staticmethod
+    def compute_gradient(image_array):
         # Initialize a gradient kernel
         scharr = np.array([[-3 - 3j, 0 - 10j, +3 - 3j],
                            [-10 + 0j, 0 + 0j, +10 + 0j],
@@ -38,9 +49,6 @@ class GameOfLife:
 
         # Scale the gradients to [0, 1]
         grad /= grad.max()
-
-        # Threshold values to binary outcomes
-        grad = np.where(grad >= self.gradient_mag, 1, 0)
 
         return grad
         
